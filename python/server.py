@@ -23,10 +23,7 @@ async def websocket_handler(request):
         os.dup2(slave,0)
         os.dup2(slave,1)
         os.dup2(slave,2)
-        #os._exit(os.execv('/usr/bin/ipython3',('python@ws', )))
-        #os._exit(os.execv('/bin/bash',('login@ws', )))
-        
-        os._exit(os.execv(sys.argv[1],('login@ws', )))
+        os._exit(os.execv(sys.argv[1],(sys.argv[1], sys.argv[1:])))
 
     stdin = os.fdopen(master, 'wb+', buffering=0)
 
