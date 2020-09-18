@@ -5,6 +5,8 @@ import os
 import pty
 import fcntl
 
+import sys
+
 async def websocket_handler(request):
 
     ws = web.WebSocketResponse()
@@ -21,9 +23,10 @@ async def websocket_handler(request):
         os.dup2(slave,0)
         os.dup2(slave,1)
         os.dup2(slave,2)
-        os._exit(os.execv('/usr/bin/ipython3',('python@ws', )))
-
-        #os._exit(os.execv('/usr/bin/su',('login@ws', '-', 'eri')))
+        #os._exit(os.execv('/usr/bin/ipython3',('python@ws', )))
+        #os._exit(os.execv('/bin/bash',('login@ws', )))
+        
+        os._exit(os.execv(sys.argv[1],('login@ws', )))
 
     stdin = os.fdopen(master, 'wb+', buffering=0)
 
@@ -63,4 +66,5 @@ async def websocket_handler(request):
 
 app = web.Application()
 app.add_routes([web.get('/term', websocket_handler)])
+app.router.add_static('/', '../html')
 web.run_app(app)
