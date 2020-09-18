@@ -9,12 +9,12 @@ import sys
 
 async def websocket_handler(request):
 
+    print('starting: ', sys.argv[1], (sys.argv[1], *sys.argv[2:]))
+
     ws = web.WebSocketResponse()
     await ws.prepare(request)
     loop = asyncio.get_running_loop()
-
     master, slave = pty.openpty()
-
     name = os.ttyname(slave)
 
     pid = os.fork() 
@@ -23,7 +23,7 @@ async def websocket_handler(request):
         os.dup2(slave,0)
         os.dup2(slave,1)
         os.dup2(slave,2)
-        os._exit(os.execv(sys.argv[1],(sys.argv[1], *sys.argv[1:])))
+        os._exit(os.execv(sys.argv[1],(sys.argv[1], *sys.argv[2:])))
 
     stdin = os.fdopen(master, 'wb+', buffering=0)
 
